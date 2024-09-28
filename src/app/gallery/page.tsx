@@ -1,37 +1,43 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
+import UploadButton from "./upload-button";
+import cloudinary from "cloudinary";
+import CloudinaryImage from "./cloudinary-image";
 
-import React, { useState } from "react";
-
-export default function GalleryPage() {
-  const [imageId, setImageId] = useState<string>("");
+type SearchResult = {
+  
+      public_id: string;
+    
+};
+export default async function GalleryPage() {
+  const result = (await cloudinary.v2.search
+    .expression(`resource_type:image`)
+    .sort_by("public_id", "desc")
+    .max_results(5)
+    .execute()) as { resources:SearchResult[]};
+   
 
   return (
     <main>
-      <section>
+      <div className="flex flex-col gap-8">
+        <section>
         <div className="flex justify-between">
           <h1 className="text-4xl font-bold">Gallery</h1>
-          <CldUploadWidget
-            uploadPreset="yh61a5a8"
-            onSuccess={(result) => {
-              const info = result.info as { public_id: string };
-              setImageId(info.public_id);
-            }}
-          >
-            {({ open }) => {
-              return (
-                <Button variant="blue" onClick={() => open()}>
-                  <Upload className="mr-2 h-4 w-4" />  
-                  Upload
-                </Button>
-                
-              );
-            }}
-          </CldUploadWidget>
+          <UploadButton />
         </div>
       </section>
+      <section>
+        <div className="grid grid-cols-4 gap-4">
+          {result &&
+          result.resources.map((file) => (
+            <div key={file.public_id}>
+              <CloudinaryImage public_id={file.public_id} />
+            </div>
+            
+          ))}
+        </div>
+      </section>
+      </div>
+      
     </main>
   );
 }
