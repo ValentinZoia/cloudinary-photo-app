@@ -1,10 +1,10 @@
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Heart, Images, Library } from "lucide-react";
+
+import SideMenu from "@/components/layout/SideMenu";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,34 +23,6 @@ export const metadata: Metadata = {
 };
 
 
-
-function SideMenu(){
-  return(
-    <div className="pb-12 w-1/4">
-      <div className="space-y-4 py-4">
-        <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            Manage
-          </h2>
-          <div className="space-y-1">
-            <Button variant="secondary" className="w-full justify-start">
-             <Images className="mr-2 h-4 w-4" />
-              Gallery
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Library className="mr-2 h-4 w-4" />
-              Albums
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Heart className="mr-2 h-4 w-4" />
-              Favorites
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export default function RootLayout({
   children,
@@ -77,15 +49,10 @@ export default function RootLayout({
           </div>
         </div>
 
-        
         <div className="flex">
           <SideMenu />
-          <div className="w-full px-4 pt-8">
-               {children}
-          </div>
-       
-          </div>
-        
+          <div className="w-full px-4 pt-8">{children}</div>
+        </div>
       </body>
     </html>
   );
