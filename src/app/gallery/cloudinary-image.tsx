@@ -7,23 +7,23 @@ import { useState, useTransition } from "react";
 
 import { HeartFilledIcon, HeartIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
+import { SearchResult } from "./page";
 
 interface CloudinaryImageProps {
   public_id: string;
-  imageData: {tags: string[]};
+  imageData: SearchResult;
+  onFavorite?:( unheartedResource:SearchResult) => void
 }
 
-export default function CloudinaryImage({ public_id, imageData }: CloudinaryImageProps) {
+export default function CloudinaryImage({ public_id, imageData, onFavorite }: CloudinaryImageProps) {
   const isFavorite = imageData.tags.includes("favorite");
   const [trasition, startTransition] = useTransition()
   const [changeColor, setChangeColor] = useState<boolean>(isFavorite);//this is only for the user experience
-  const pathname = usePathname();
-  console.log(pathname)
   
   
   return (
     <>
-      <div className="relative">
+      <div className="relative max-w-[300px]">
         <CldImage
           key={public_id}
           width="300"
@@ -38,9 +38,10 @@ export default function CloudinaryImage({ public_id, imageData }: CloudinaryImag
          <>
          
          <HeartFilledIcon className="absolute top-2 right-2 mr-2 h-6 w-6 text-red-500 cursor-pointer hover:text-red-500 " onClick={()=>{
-          setChangeColor(!changeColor);
+          onFavorite?.(imageData)
+          setChangeColor(false);
           startTransition(()=>{
-            setAsFavoriteAction(public_id, true, pathname)
+            setAsFavoriteAction(public_id, true)
           })
           
         }} />
@@ -50,9 +51,9 @@ export default function CloudinaryImage({ public_id, imageData }: CloudinaryImag
         :(
           <>
           <HeartIcon className="absolute top-2 right-2 mr-2 h-6 w-6 cursor-pointer hover:text-red-500 " onClick={()=>{
-          setChangeColor(!changeColor);
+          setChangeColor(true);
           startTransition(()=>{
-            setAsFavoriteAction(public_id, false, pathname)
+            setAsFavoriteAction(public_id, false)
           })
           
         }} />
